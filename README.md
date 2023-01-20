@@ -11,20 +11,20 @@ built using [Spring Boot](https://spring.io/projects/spring-boot),
 
 ### Running locally
 
-### STEP 1 - Checkout
+### Step 1 - Checkout
 
 ```bash
 git clone https://github.com/davimonteiro/app-demo
 cd app-demo
 ```  
 
-### STEP 1 - Packaging
+### Step 2 - Packaging
 
 ```bash
 ./gradlew build
 ``` 
 
-### STEP 1 - Running
+### Step 3 - Running
 
 
 ```bash
