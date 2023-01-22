@@ -4,14 +4,17 @@ import br.com.davimonteiro.api.dto.SensorDTO;
 import br.com.davimonteiro.domain.Metric;
 import br.com.davimonteiro.domain.Sensor;
 import br.com.davimonteiro.exception.SensorNotFoundException;
+import br.com.davimonteiro.repository.MetricRepository;
 import br.com.davimonteiro.repository.SensorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summarizingDouble;
@@ -21,6 +24,9 @@ public class SensorService {
 
     @Autowired
     private SensorRepository sensorRepository;
+
+    @Autowired
+    private MetricRepository metricRepository;
 
     public List<Sensor> findAll() {
         return sensorRepository.findAll();
@@ -38,27 +44,17 @@ public class SensorService {
     }
 
     public List<SensorDTO> query(List<Long> sensorIds, List<String> metrics, String statistic, LocalDate creationDate) {
-        List<Sensor> sensors = sensorRepository.querySensorsWithCreationDateBefore(sensorIds, metrics, creationDate);
-
-        // Remove items
-        sensors.forEach(sensor -> {
-            Set<Metric> filteredMetrics = sensor.getMetrics()
-                    .stream()
-                    .filter(metric -> metrics.contains(metric.getName()))
-                    .collect(Collectors.toSet());
-            sensor.setMetrics(filteredMetrics);
-        });
+        List<Metric> listOfMetrics = metricRepository.queryMetricsWithCreationDateBefore(sensorIds, metrics, creationDate);
 
         List<SensorDTO> result = new ArrayList<>();
-
-        sensors.forEach(sensor -> {
-            Map<String, DoubleSummaryStatistics> summaryStatistics = sensor.getMetrics()
-                    .stream()
+        sensorIds.forEach(sensorId -> {
+            Map<String, DoubleSummaryStatistics> summaryStatistics = listOfMetrics.stream()
+                    .filter(metric -> metric.getSensor().getId().equals(sensorId))
                     .collect(groupingBy(Metric::getName, summarizingDouble(Metric::getValue)));
 
             SensorDTO dto = new SensorDTO();
-            dto.setSensorId(sensor.getId());
-            dto.setSummaryStatistics(summaryStatistics);
+            dto.setSensorId(sensorId);
+            summaryStatistics.forEach((metricName, summary) -> dto.setSummaryStatistics(metricName, summary, statistic));
             result.add(dto);
         });
 
@@ -66,7 +62,8 @@ public class SensorService {
     }
 
     public Sensor findById(Long id) throws SensorNotFoundException {
-        return sensorRepository.findById(id).orElseThrow(SensorNotFoundException::new);
+        return sensorRepository.findSensorBy(id)
+                .orElseThrow(SensorNotFoundException::new);
     }
 
 }
