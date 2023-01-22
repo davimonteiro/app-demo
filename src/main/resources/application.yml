@@ -1,5 +1,4 @@
 spring:
-#  profiles: dev
   datasource:
     url: jdbc:h2:mem:app_db;DB_CLOSE_ON_EXIT=FALSE
     username: sa
@@ -10,7 +9,11 @@ spring:
     generate-ddl: true
     properties:
       new_generator_mappings: false
+      hibernate:
+        format_sql: true
   h2:
     console:
       enabled: true
+  jackson:
+    default-property-inclusion: non_null
 ---
