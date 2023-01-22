@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,16 +11,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 
-@Getter @Setter
+@Getter
+@Setter
 @Entity
 public class Sensor {
     @Id
     private Long id;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "sensor", cascade = ALL, fetch = EAGER)
+    @OneToMany(mappedBy = "sensor", cascade = ALL, fetch = LAZY)
     private Set<Metric> metrics = new HashSet<>();
 
     public Metric getMetricById(Long id) {
