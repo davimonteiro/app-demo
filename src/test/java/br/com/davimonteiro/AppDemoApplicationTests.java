@@ -33,16 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AppDemoApplicationTests {
 
     private static final String URL = "/api/sensors/";
-
     private static final MediaType contentType = MediaType.APPLICATION_JSON;
+    private static MockMvc mvc;
+    private MockHttpServletRequestBuilder request;
+    private Sensor sensor;
     @Autowired
     public ObjectMapper mapper;
-    private static MockMvc mvc;
-
-    private MockHttpServletRequestBuilder request;
-
-    private Sensor sensor;
-
     @Autowired
     private SensorService sensorService;
 
@@ -57,7 +53,7 @@ class AppDemoApplicationTests {
 
     @Test
     public void updateTest() throws Exception {
-        // Given that I have a sensor with ID equals to 1
+        // Given that I have a sensor with ID equal to 1
         Sensor sensor = sensorService.findById(1L);
 
         // When I update the metric values of an existing sensor
