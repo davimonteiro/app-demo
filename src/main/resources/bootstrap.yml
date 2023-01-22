@@ -1,7 +1,5 @@
 spring:
   application:
     name: app-demo
-  profiles:
-    active: dev
 server:
   port: 8080
