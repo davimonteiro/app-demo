@@ -53,7 +53,7 @@ public class DatabaseInitializer {
         LocalDate end = LocalDate.now();
         LocalDate randomDate = between(start, end);
 
-        Metric temperature = Metric.builder()
+        Metric temperature = new Metric.MetricBuilder()
                 .name("Temperature")
                 .value(generateRandomValue(-30.0, 30.0))
                 .unit("Celsius")
@@ -61,7 +61,7 @@ public class DatabaseInitializer {
                 .sensor(sensor)
                 .build();
 
-        Metric humidity = Metric.builder()
+        Metric humidity = new Metric.MetricBuilder()
                 .name("Humidity")
                 .value(generateRandomValue(0.0, 100.0))
                 .unit("%")
@@ -69,7 +69,7 @@ public class DatabaseInitializer {
                 .sensor(sensor)
                 .build();
 
-        Metric windSpeed = Metric.builder()
+        Metric windSpeed = new Metric.MetricBuilder()
                 .name("Wind speed")
                 .value(generateRandomValue(0.0, 50.0))
                 .unit("km/h")
